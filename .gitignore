@@ -3,4 +3,4 @@ ganache-cli-docker-compose/ganache_data
 ipfs-dokcer/export
 ipfs-dokcer/ipfs_data
 web/__pycache__
-web/files/*
+web/files/*  
