@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.4-rc.1/web3.min.js"></script>
+</head>
+
+<body>
+    <script>
+        const contractAddress = '0xa25b1c8d99a9f43a71a7873aE29587e9eBB9dADe';
+        const abi = [
+            {
+                "inputs": [],
+                "name": "getHash",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "x",
+                        "type": "string"
+                    }
+                ],
+                "name": "sendHash",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            }
+        ]
+        var contract
+        var account
+        var walletAddress
+        async function connect() {
+            if (typeof window.ethereum !== 'undefined') {
+                await ethereum.request({ method: "eth_requestAccounts" });
+                window.web3 = new Web3(window.ethereum);
+                window.ethereum.enable();
+                var accounts = await web3.eth.getAccounts();
+                account = accounts[0]
+                contract = new web3.eth.Contract(abi, contractAddress);
+                console.log(`account :${account}`)
+            } else {
+                alert("No wallet");
+            }
+        };
+    </script>
+
+    <!-- <body onload="connect();"></body> -->
+    <!-- <script>
+        async function getHash() {
+            contract.methods.getHash().call().then(value => {
+                console.log(`目前值：${value}`);
+            });
+        }
+        async function sendHash(value) {
+            contract.methods.sendHash(value).send({ from: account })
+                .then(() => console.log(`hash:${value}`));
+        }
+    </script>
+    <input type="button" value="getHash" onclick="getHash();" class="btn"></input>
+    <input type="button" value="sendHash" onclick="sendHash(`24`);" class="btn"></input> -->
+    <form action="" method=post enctype=multipart/form-data>
+        <p><input type=file name=file>
+            <input type=submit value=Upload>
+    </form>
+</body>
+
+</html>
