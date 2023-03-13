@@ -90,6 +90,13 @@ contract user {
     }
 
     function new_project(string memory _name) public {
+        for (uint i = 0; i < projects.length; i++) {
+            require(
+                keccak256(abi.encodePacked(projects[i].get_name())) !=
+                    keccak256(abi.encodePacked(_name)),
+                "You already have the same project"
+            );
+        }
         project p = new project(_name, addr);
         projects.push(p);
     }
