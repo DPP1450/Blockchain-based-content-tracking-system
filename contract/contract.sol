@@ -16,7 +16,7 @@ contract commit {
         time = block.timestamp;
     }
 
-    function add_comment(string memory from,string memory _comment) public {
+    function add_comment(string memory from, string memory _comment) public {
         comment memory newComment = comment(from, _comment);
         comments.push(newComment);
     }
@@ -63,16 +63,16 @@ contract project {
         return projectName;
     }
 
-    function get_all_commit_logs() public view returns(string[] memory){
+    function get_all_commit_logs() public view returns (string[] memory) {
         string[] memory logs = new string[](commits.length);
-        for (uint i = 0 ; i < commits.length ; i++){
+        for (uint i = 0; i < commits.length; i++) {
             logs[i] = commits[i].get_log();
         }
         return logs;
     }
 
-    function get_commit(uint idx) public view returns(commit){
-        if (idx + 1 > commits.length){
+    function get_commit(uint idx) public view returns (commit) {
+        if (idx + 1 > commits.length) {
             revert("out of bound");
         }
         return commits[idx];
@@ -98,94 +98,121 @@ contract user {
         return name;
     }
 
-    function get_owner() public view returns (address) {
+    function get_addr() public view returns (address) {
         return addr;
     }
 
-    function get_all_projects_name() public view returns(string[] memory){
+    function get_all_projects_name() public view returns (string[] memory) {
         string[] memory names = new string[](projects.length);
-        for (uint i = 0 ; i < projects.length ; i++){
+        for (uint i = 0; i < projects.length; i++) {
             names[i] = projects[i].get_name();
         }
         return names;
     }
 
-    function get_project(uint idx) public view returns(project){
-        if (idx + 1 > projects.length){
+    function get_project(uint idx) public view returns (project) {
+        if (idx + 1 > projects.length) {
             revert("out of bound");
         }
         return projects[idx];
     }
-
 }
 
 contract controller {
     mapping(address => user) users;
     user[] userArray;
 
-    modifier only_user {
+    modifier only_user() {
         bool f = true;
-        for (uint i = 0 ; i < userArray.length ; i++){
-            if(userArray[i].get_owner() == msg.sender){
-                f = false; 
-            }  
+        for (uint i = 0; i < userArray.length; i++) {
+            if (userArray[i].get_addr() == msg.sender) {
+                f = false;
+            }
         }
-        if (f){
+        if (f) {
             revert("Please sign up");
         }
         _;
     }
 
     function sign_up(string memory _name) public {
-        for (uint i = 0 ; i < userArray.length ; i++){
-            require(userArray[i].get_owner() != msg.sender ,"You have already registered");
+        for (uint i = 0; i < userArray.length; i++) {
+            require(
+                userArray[i].get_addr() != msg.sender,
+                "You have already registered"
+            );
         }
         user u = new user(_name, msg.sender);
         users[msg.sender] = u;
         userArray.push(u);
     }
 
-    function get_users() public view returns(string[] memory){
+    function get_users() public view returns (string[] memory) {
         string[] memory name = new string[](userArray.length);
-        for (uint i = 0 ; i < userArray.length ; i++){
+        for (uint i = 0; i < userArray.length; i++) {
             name[i] = (userArray[i].get_name());
         }
         return name;
     }
 
-    function new_project(string memory _name) public only_user{
+    function new_project(string memory _name) public only_user {
         user u = users[msg.sender];
         u.new_project(_name);
     }
 
-    function get_all_projects_name() public only_user view returns(string[] memory){
+    function get_all_projects_name()
+        public
+        view
+        only_user
+        returns (string[] memory)
+    {
         user u = users[msg.sender];
         return u.get_all_projects_name();
     }
 
-    function get_all_commit_logs(uint projectIdx) public only_user view returns(string[] memory){
+    function get_all_commit_logs(
+        uint projectIdx
+    ) public view only_user returns (string[] memory) {
         project p = users[msg.sender].get_project(projectIdx);
         return p.get_all_commit_logs();
     }
 
-    function new_commit(uint projectIdx , string memory _ipfsHash ,string memory _log) public only_user{
+    function new_commit(
+        uint projectIdx,
+        string memory _ipfsHash,
+        string memory _log
+    ) public only_user {
         project p = users[msg.sender].get_project(projectIdx);
-        p.new_commit(_ipfsHash,_log);
+        p.new_commit(_ipfsHash, _log);
     }
 
-    function new_comment(uint projectIdx ,uint commitIdx ,string memory _comment) public only_user{
+    function new_comment(
+        uint projectIdx,
+        uint commitIdx,
+        string memory _comment
+    ) public only_user {
         project p = users[msg.sender].get_project(projectIdx);
         commit c = p.get_commit(commitIdx);
-        c.add_comment(users[msg.sender].get_name(),_comment);
+        c.add_comment(users[msg.sender].get_name(), _comment);
     }
 
-    function get_ipfs_hash(uint projectIdx ,uint commitIdx) public view returns(string memory){
-        commit c  = users[msg.sender].get_project(projectIdx).get_commit(commitIdx);
+    function get_ipfs_hash(
+        uint projectIdx,
+        uint commitIdx
+    ) public view returns (string memory) {
+        commit c = users[msg.sender].get_project(projectIdx).get_commit(
+            commitIdx
+        );
         return c.get_ipfs_hash();
     }
 
-    function get_comments(uint projectIdx ,uint commitIdx) public view returns(comment[] memory){
-        commit c  = users[msg.sender].get_project(projectIdx).get_commit(commitIdx);
+    function get_comments(
+        uint projectIdx,
+        uint commitIdx
+    ) public view returns (comment[] memory) {
+        commit c = users[msg.sender].get_project(projectIdx).get_commit(
+            commitIdx
+        );
         return c.get_comments();
     }
 }

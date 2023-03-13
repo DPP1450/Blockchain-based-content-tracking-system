@@ -6,11 +6,91 @@
 
 <body>
     <script>
-        const contractAddress = '0xa25b1c8d99a9f43a71a7873aE29587e9eBB9dADe';
-        const abi = [
+        const contractAddress = '0x476059cD57800DB8eB88f67c2Aa38A6fCf8251e0';
+        const abi = 
+        [
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "projectIdx",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "get_all_commit_logs",
+                "outputs": [
+                    {
+                        "internalType": "string[]",
+                        "name": "",
+                        "type": "string[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
             {
                 "inputs": [],
-                "name": "getHash",
+                "name": "get_all_projects_name",
+                "outputs": [
+                    {
+                        "internalType": "string[]",
+                        "name": "",
+                        "type": "string[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "projectIdx",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "commitIdx",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "get_comments",
+                "outputs": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "from",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "comment",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct comment[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "projectIdx",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "commitIdx",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "get_ipfs_hash",
                 "outputs": [
                     {
                         "internalType": "string",
@@ -22,14 +102,86 @@
                 "type": "function"
             },
             {
+                "inputs": [],
+                "name": "get_users",
+                "outputs": [
+                    {
+                        "internalType": "string[]",
+                        "name": "",
+                        "type": "string[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            },
+            {
                 "inputs": [
                     {
+                        "internalType": "uint256",
+                        "name": "projectIdx",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "commitIdx",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "string",
-                        "name": "x",
+                        "name": "_comment",
                         "type": "string"
                     }
                 ],
-                "name": "sendHash",
+                "name": "new_comment",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint256",
+                        "name": "projectIdx",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_ipfsHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_log",
+                        "type": "string"
+                    }
+                ],
+                "name": "new_commit",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_name",
+                        "type": "string"
+                    }
+                ],
+                "name": "new_project",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_name",
+                        "type": "string"
+                    }
+                ],
+                "name": "sign_up",
                 "outputs": [],
                 "stateMutability": "nonpayable",
                 "type": "function"
@@ -53,8 +205,8 @@
         };
     </script>
 
-    <!-- <body onload="connect();"></body> -->
-    <!-- <script>
+    <body onload="connect();"></body>
+    <script>
         async function getHash() {
             contract.methods.getHash().call().then(value => {
                 console.log(`目前值：${value}`);
@@ -66,7 +218,7 @@
         }
     </script>
     <input type="button" value="getHash" onclick="getHash();" class="btn"></input>
-    <input type="button" value="sendHash" onclick="sendHash(`24`);" class="btn"></input> -->
+    <input type="button" value="sendHash" onclick="sendHash(`24`);" class="btn"></input>
     <form action="" method=post enctype=multipart/form-data>
         <p><input type=file name=file>
             <input type=submit value=Upload>
