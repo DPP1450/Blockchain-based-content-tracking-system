@@ -52,11 +52,15 @@ contract project {
         projectName = _projectName;
     }
 
-    function new_commit(string memory _ipfsHash, string memory _log) public {
+    function new_commit(
+        string memory _ipfsHash,
+        string memory _log
+    ) public returns (commit) {
         commit c = new commit();
         c.set_ipfs_hash(_ipfsHash);
         c.set_log(_log);
         commits.push(c);
+        return c;
     }
 
     function get_name() public view returns (string memory) {
@@ -128,7 +132,7 @@ contract user {
 contract controller {
     mapping(address => user) users;
     user[] userArray;
-
+    commit[] commits;
     modifier only_user() {
         bool f = true;
         for (uint i = 0; i < userArray.length; i++) {
@@ -190,16 +194,22 @@ contract controller {
         string memory _log
     ) public only_user {
         project p = users[msg.sender].get_project(projectIdx);
-        p.new_commit(_ipfsHash, _log);
+        commits.push(p.new_commit(_ipfsHash, _log));
+    }
+
+    function get_all_commit_ipfs() public view returns (string[] memory) {
+        string[] memory ipfs = new string[](commits.length);
+        for (uint i = 0; i < commits.length; i++) {
+            ipfs[i] = (commits[i].get_ipfs_hash());
+        }
+        return ipfs;
     }
 
     function new_comment(
-        uint projectIdx,
         uint commitIdx,
         string memory _comment
     ) public only_user {
-        project p = users[msg.sender].get_project(projectIdx);
-        commit c = p.get_commit(commitIdx);
+        commit c = commits[commitIdx];
         c.add_comment(users[msg.sender].get_name(), _comment);
     }
 

@@ -106,22 +106,13 @@ def listCommit():
     print ("\n")
 
 def addComment():
-    listProject()
-    projectidx = int(input("please select project or enter -1 to cancel\n"))
-    if projectidx == -1:
-        return 
-    projects = contract.functions.get_all_projects_name().call()
-    if (len(projects) < projectidx):
-        print ("Index out of bound")
-        return 
 
-    commits = contract.functions.get_all_commit_logs(projectidx-1).call()
+    commits = contract.functions.get_all_commit_ipfs().call()
     if len(commits) == 0:
         print ("no commit")
         return 
     for idx,p in enumerate(commits):
-        cid = contract.functions.get_ipfs_hash(projectidx-1 ,idx).call()
-        print("%d. %s , cid : %s" % (idx+1,p,cid))
+        print("%d. %s" % (idx+1,p))
     print ("\n")
     commitidx = int(input("please select commit or enter -1 to cancel\n"))
     if commitidx == -1:
@@ -134,7 +125,7 @@ def addComment():
     if commentMessage == exit:
         return
     update_tx_params()
-    new_comment_tx = contract.functions.new_comment(projectidx-1,commitidx-1,commentMessage).buildTransaction(tx_params)
+    new_comment_tx = contract.functions.new_comment(commitidx-1,commentMessage).buildTransaction(tx_params)
     signed_tx = web3.eth.account.sign_transaction(new_comment_tx, private_key)
     try:
         tx_hash = web3.eth.send_raw_transaction(signed_tx.rawTransaction)

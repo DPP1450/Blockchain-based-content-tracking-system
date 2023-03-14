@@ -1,5 +1,18 @@
 [
     {
+        "inputs": [],
+        "name": "get_all_commit_ipfs",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -106,11 +119,6 @@
     },
     {
         "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "projectIdx",
-                "type": "uint256"
-            },
             {
                 "internalType": "uint256",
                 "name": "commitIdx",
